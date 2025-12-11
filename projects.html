@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Projects - Shivram D. Hulgunde</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="container">
+      <h1>Projects — Detailed Writeups</h1>
+      <p class="subtitle">End-to-end Azure Data Engineering projects with architecture, code snippets, and deployment notes.</p>
+      <p><a href="index.html">Back to Home</a></p>
+    </div>
+  </header>
+
+  <main class="container">
+    <section>
+      <h2>1. End-to-End Azure Data Lakehouse</h2>
+      <h3>Problem Statement</h3>
+      <p>Multiple data sources (CSV, JSON, APIs) with inconsistent formats required a unified, auditable, and performant analytics platform.</p>
+      <h3>Architecture</h3>
+      <p>ADF (ingest) → ADLS Gen2 (raw) → Databricks (transform) → Delta Lake (bronze/silver/gold) → Synapse (analytics)</p>
+      <h3>Key Components</h3>
+      <ul>
+        <li>ADF parameterized pipelines for orchestration and incremental loads.</li>
+        <li>Databricks notebooks (PySpark) for cleaning, joins, deduplication, and aggregation.</li>
+        <li>Delta Lake MERGE for SCD Type-2 handling.</li>
+        <li>Synapse serverless SQL for consumption and Power BI reporting.</li>
+      </ul>
+      <h3>Sample PySpark MERGE (SCD Type-2)</h3>
+      <pre><code>from delta.tables import DeltaTable
+deltaTable = DeltaTable.forPath(spark, "/mnt/delta/customer_silver")
+deltaTable.alias("tgt").merge(
+    source_df.alias("src"),
+    "tgt.customer_id = src.customer_id"
+).whenMatchedUpdate(
+    condition = "tgt.current = true AND src.hash <> tgt.hash",
+    set = {
+        "current": "false",
+        "end_date": "src.effective_date"
+    }
+).whenNotMatchedInsertAll().execute()</code></pre>
+      <h3>Deployment Notes</h3>
+      <p>Use Azure DevOps pipelines to deploy ADF ARM templates and Databricks notebooks. Implement CI/CD with feature branches and PR validation.</p>
+    </section>
+
+    <hr/>
+
+    <section>
+      <h2>2. Retail Sales ETL Pipeline</h2>
+      <h3>Problem Statement</h3>
+      <p>Daily sales files are delivered and must be ingested, validated, and made available for reporting with minimal delay.</p>
+      <h3>Solution</h3>
+      <ol>
+        <li>ADF Copy Activity ingests files to raw ADLS folder.</li>
+        <li>ADF Mapping Data Flow performs schema validation and cleansing.</li>
+        <li>Databricks job transforms and writes Delta tables partitioned by date.</li>
+      </ol>
+      <h3>Watermarking Strategy</h3>
+      <p>Use file timestamp + max(process_date) checks to only process new records and avoid duplicates.</p>
+      <h3>ADF Retry & Error Handling</h3>
+      <p>Configure retries on activities and send failure email via Logic Apps/SendGrid on repeated failures.</p>
+    </section>
+
+    <hr/>
+
+    <section>
+      <h2>3. Delta Lake SCD Type-2 Modelling</h2>
+      <h3>Problem Statement</h3>
+      <p>Maintain historical records for dimension tables (customer/product) while supporting fast analytics.</p>
+      <h3>Design</h3>
+      <ul>
+        <li>Use Delta table with columns: id, attributes..., effective_date, end_date, current (boolean), hash.</li>
+        <li>Compute hash of business attributes to detect changes.</li>
+      </ul>
+      <h3>Sample Hash Computation & Merge</h3>
+      <pre><code>from pyspark.sql.functions import sha2, concat_ws
+src_df = src_df.withColumn("hash", sha2(concat_ws("||", *cols), 256))
+</code></pre>
+      <p>Use MERGE with current flag updates and insert new record for changed rows.</p>
+    </section>
+
+    <hr/>
+
+    <section>
+      <h2>4. Real-Time Streaming Pipeline (Event Hub → Databricks Structured Streaming → Delta)</h2>
+      <h3>Problem Statement</h3>
+      <p>Ingest telemetry/events and compute near real-time metrics for monitoring dashboards and alerting.</p>
+      <h3>Solution</h3>
+      <ol>
+        <li>Event Hub captures events from producers.</li>
+        <li>Databricks Autoloader or structured streaming reads events in micro-batches.</li>
+        <li>Process, enrich, and write to Delta (bronze); aggregate to silver/gold for dashboards.</li>
+      </ol>
+      <h3>Exactly-once & Checkpointing</h3>
+      <p>Configure checkpointLocation and use idempotent writes / transactionally write to Delta.</p>
+    </section>
+
+    <hr/>
+
+    <section>
+      <h2>How to Reproduce Locally / Repo Structure</h2>
+      <p>Each repo contains:</p>
+      <pre><code>README.md
+/notebooks           # Databricks notebooks (PySpark)
+/infrastructure      # ARM templates / Terraform (if any)
+/scripts             # helper scripts and deploy scripts
+/sample-data         # small sample files for testing
+</code></pre>
+      <p>Follow the README in each project to run notebooks locally with a small sample dataset, or deploy to a test workspace on Azure.</p>
+    </section>
+
+  </main>
+
+  <footer>
+    <p style="text-align:center;color:#666;padding:24px">Contact: shivahulgunde55@gmail.com</p>
+  </footer>
+</body>
+</html>

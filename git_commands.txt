@@ -1,0 +1,31 @@
+# Git commands to push portfolio to your GitHub Pages repository (replace placeholders if needed)
+
+# 1. Create local repo (run inside extracted portfolio folder)
+git init
+git add .
+git commit -m "Initial portfolio upload"
+git branch -M main
+git remote add origin https://github.com/Shiva1268/Shiva1268.github.io.git
+git push -u origin main
+
+# 2. Creating a feature branch, opening PR, and merging
+git checkout -b feat/update-projects
+# make changes (edit index.html, add screenshots)
+git add .
+git commit -m "Update project descriptions and screenshots"
+git push origin feat/update-projects
+
+# On GitHub UI:
+# - Open a Pull Request from feat/update-projects -> main
+# - Review, then Merge (or use "Squash and merge")
+
+# 3. Quick update workflow for future changes
+git checkout main
+git pull origin main
+# edit files locally
+git add .
+git commit -m "Minor update"
+git push origin main
+
+# Note: If push fails due to authentication, create a GitHub Personal Access Token (PAT) with 'repo' scope.
+# Use your username and PAT when prompted for password.

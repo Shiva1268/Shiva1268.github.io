@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="en">
 <head>
@@ -9,10 +8,14 @@
 </head>
 <body>
   <header class="hero">
-    <div class="container">
+    <div class="profile">
       <h1>Shivram D. Hulgunde</h1>
       <p class="subtitle">Azure Data Engineer · ADF · Databricks · PySpark · Delta Lake · SQL</p>
-      <p class="contact">📧 shivahulgunde55@gmail.com · 📞 9975205557 · <a href="https://www.linkedin.com/in/shiv-hul-761a46127">LinkedIn</a></p>
+      <p class="contact">📧 <a href="mailto:shivahulgunde55@gmail.com">shivahulgunde55@gmail.com</a> · 📞 9975205557 · <a href="https://www.linkedin.com/in/shiv-hul-761a46127" target="_blank">LinkedIn</a></p>
+    </div>
+    <div class="top-actions">
+      <a class="btn" href="Shivram_Hulgunde_Resume.pdf" download>Download Resume (PDF)</a>
+      <button class="toggle" id="themeToggle">Toggle Dark</button>
     </div>
   </header>
 
@@ -34,23 +37,35 @@
       <h2>Projects</h2>
       <div class="cards">
         <article class="card">
+          <img src="images/proj1.png" alt="End-to-End Lakehouse">
           <h3>End-to-End Azure Data Lakehouse</h3>
           <p>Built a complete Lakehouse using ADF, Databricks, ADLS, Delta Lake, and Synapse with Medallion architecture and SCD Type-2.</p>
+          <p class="meta">Tech: ADF · Databricks · PySpark · Delta · Synapse</p>
+          <p class="meta">Repo: <a href="https://github.com/Shiva1268/End-to-End-Lakehouse" target="_blank">github.com/Shiva1268/End-to-End-Lakehouse</a></p>
         </article>
 
         <article class="card">
+          <img src="images/proj2.png" alt="Retail ETL">
           <h3>Retail Sales ETL Pipeline</h3>
           <p>Designed ETL pipeline with incremental loads, error handling, and data cleansing using ADF and SQL DB.</p>
+          <p class="meta">Tech: ADF · Data Flows · SQL</p>
+          <p class="meta">Repo: <a href="https://github.com/Shiva1268/Retail-Sales-ETL" target="_blank">github.com/Shiva1268/Retail-Sales-ETL</a></p>
         </article>
 
         <article class="card">
+          <img src="images/proj3.png" alt="SCD2 Delta">
           <h3>Delta Lake SCD Type-2 Modelling</h3>
           <p>Implemented merge logic, partitioning, and time travel for historical customer dimension tracking in Delta Lake.</p>
+          <p class="meta">Tech: Databricks · Delta · PySpark</p>
+          <p class="meta">Repo: <a href="https://github.com/Shiva1268/Delta-SCD2" target="_blank">github.com/Shiva1268/Delta-SCD2</a></p>
         </article>
 
         <article class="card">
+          <img src="images/proj4.png" alt="Streaming">
           <h3>Real-Time Streaming Pipeline</h3>
           <p>Processed streaming data from Event Hub using Databricks Structured Streaming and stored results in Delta tables.</p>
+          <p class="meta">Tech: Event Hub · Databricks Streaming · Delta</p>
+          <p class="meta">Repo: <a href="https://github.com/Shiva1268/Streaming-Pipeline" target="_blank">github.com/Shiva1268/Streaming-Pipeline</a></p>
         </article>
       </div>
     </section>
@@ -58,11 +73,25 @@
     <section id="contact">
       <h2>Contact</h2>
       <p>Email: <a href="mailto:shivahulgunde55@gmail.com">shivahulgunde55@gmail.com</a></p>
+      <p>GitHub: <a href="https://github.com/Shiva1268" target="_blank">github.com/Shiva1268</a></p>
     </section>
   </main>
 
   <footer>
     <p>Built with ❤️ · Azure Data Engineer Portfolio</p>
   </footer>
+
+<script>
+document.getElementById('themeToggle').addEventListener('click', function() {{
+  document.body.classList.toggle('dark');
+  var mode = document.body.classList.contains('dark') ? 'dark' : 'light';
+  localStorage.setItem('theme', mode);
+}});
+window.addEventListener('load', function() {{
+  var mode = localStorage.getItem('theme');
+  if(mode === 'dark') document.body.classList.add('dark');
+}});
+</script>
+
 </body>
 </html>
